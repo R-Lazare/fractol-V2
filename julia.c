@@ -12,6 +12,28 @@
 
 #include "fractol.h"
 
+static inline t_c	sum_i(t_c a, t_c b)
+{
+	return ((t_c){.re = (a.re + b.re), .img = (a.img + b.img)});
+}
+
+static inline double	module_sq(t_c z)
+{
+	return (z.re * z.re + z.img * z.img);
+}
+
+static inline t_c	pow_i(t_c z, int power, int burn)
+{
+	t_c	z0;
+
+	if (burn)
+		z = (t_c){.re = custom_fabs(z.re), .img = custom_fabs(z.img)};
+	z0 = z;
+	while (power-- > 1)
+		z = (t_c){.re = z.re * z0.re - z.img * z0.img, .img = z0.re * z.img + z0.img * z.re};
+	return (z);
+}
+
 int	julia_calc(t_c c, t_c z0, t_data img)
 {
     t_c		z;
@@ -24,8 +46,8 @@ int	julia_calc(t_c c, t_c z0, t_data img)
     mod_sq = 0;
     while (i < img.max_iter && mod_sq < 4)
     {
-        z = (t_c){.re = z.re * z.re - z.img * z.img + c.re, .img = 2 * z.re * z.img + c.img};
-        mod_sq = z.re * z.re + z.img * z.img;
+        z = sum_i(pow_i(z, img.power, img.burning_ship), c);
+        mod_sq = module_sq(z);
         i++;
     }
     if (i == img.max_iter)

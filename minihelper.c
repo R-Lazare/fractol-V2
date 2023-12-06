@@ -27,6 +27,7 @@ void	refresh_image(t_data *img)
 	img->addr = mlx_get_data_addr(img->img, &img->bpp, &img->ll, &img->endian);
 	img->current_fractal(*img);
 	mlx_put_image_to_window(img->mlx, img->win, img->img, 0, 0);
+	printf("zoom: %d, max_iter: %d, power: %d, colorint: %d, modf: %d, c1: %f, c2: %f, burn: %d, julia: %d\n", img->zoom, img->max_iter, img->power, img->colorint, img->modf, img->c1, img->c2, img->burning_ship, img->current_fractal == &julia);
 }
 
 int	key_hook_arrows(int keycode, t_data *img)
@@ -51,8 +52,6 @@ int	key_hook_arrows(int keycode, t_data *img)
 		img->xmin = img->xmin + 0.1 * (1 / cosh(pow(img->zoom, 0.75)));
 		img->xmax = img->xmax + 0.1 * (1 / cosh(pow(img->zoom, 0.75)));
 	}
-	if (keycode == 50 || keycode == 39)
-		img->c1 -= 0.04;
 	return (0);
 }
 
@@ -96,17 +95,28 @@ void	reboot(t_data *img)
 	img->xmax = 1;
 	img->power = 2;
 	img->max_iter = 20;
+	img->modf = 0;
 	img->x0 = (img->xmax - img->xmin) / 2;
 	img->y0 = (img->ymax - img->ymin) / 2;
 	img->colorset = getlist(img->colorint + 1, *img, img->colorint * 10000);
 	img->colorint = img->colorint % 7;
 	img->colorpalette = colors(img->max_iter, *img);
-	img->cos = log(1.4 - (0.75 + cos(img->colorint * 0.1) / 3));
-	refresh_image(img);
+	log(custom_fabs(1.4 + img->zoom - (0.75 + cos(img->colorint * 0.1) * img->zoom / 3)));
 }
 
 int	key_hook(int keycode, t_data *img)
 {
+	if (keycode == 115)
+		save_image_to_bmp(img);
+	if (keycode == 98)
+	{
+		img->burning_ship = !img->burning_ship;
+		img->modf = 40;
+	}
+	if (keycode == 120 && img->modf < 200)
+		img->modf++;
+	if (keycode == 119 && img->modf > -12)
+		img->modf--;
 	if (keycode == 106)
 	{
 		if (img->current_fractal == &mandelbrot)
@@ -124,7 +134,10 @@ int	key_hook(int keycode, t_data *img)
 	if (keycode == 65451)
 		img->max_iter += 3;
 	if (keycode == 65453)
+	{
 		img->max_iter -= 2;
+		img->colorint--;
+	}
 	if (img->max_iter < 1)
 		img->max_iter = 1;
 	if (keycode == 114)
@@ -136,10 +149,20 @@ int	key_hook(int keycode, t_data *img)
 	}
 	if (keycode == 51 || keycode == 38)
 		img->c2 += 0.04;
+	if (keycode == 65289)
+		img->c2 += 0.005;
 	if (keycode == 52 || keycode == 233)
 		img->c2 -= 0.04;
+	if (keycode == 97)
+		img->c2 -= 0.005;
 	if (keycode == 49 || keycode == 34)
 		img->c1 += 0.04;
+	if (keycode == 122)
+		img->c1 += 0.005;
+	if (keycode == 50 || keycode == 39)
+		img->c1 -= 0.04;
+	if (keycode == 101)
+		img->c1 -= 0.005;
 	if (keycode == 112 && img->power < 9)
 		img->power += 1;
 	if (keycode == 111 && img->power > 1)
@@ -153,23 +176,32 @@ int	key_hook(int keycode, t_data *img)
 
 int	mouse_hook(int button, int x, int y, t_data *img)
 {
+	double	zoomFactor;
+	double	width;
+	double	height;
+
+	zoomFactor = 2.0;
 	img->x0 = (double)x / img->width;
 	img->y0 = (double)y / img->height;
 	if (button == 4)
 	{
 		img->zoom++;
-		img->xmin = img->xmin + (img->x0) * (img->xmax - img->xmin) / 2;
-		img->xmax = img->xmax - (1 - img->x0) * (img->xmax - img->xmin) / 2;
-		img->ymin = img->ymin + (img->y0) * (img->ymax - img->ymin) / 2;
-		img->ymax = img->ymax - (1 - img->y0) * (img->ymax - img->ymin) / 2;
+		width = (img->xmax - img->xmin) / zoomFactor;
+		height = (img->ymax - img->ymin) / zoomFactor;
+		img->xmin = img->xmin + img->x0 * width;
+		img->xmax = img->xmin + width;
+		img->ymin = img->ymin + img->y0 * height;
+		img->ymax = img->ymin + height;
 	}
-	if (button == 5 && (img->zoom > 0 || img->current_fractal == &julia))
+	else if (button == 5 && img->zoom > 0)
 	{
 		img->zoom--;
-		img->xmin = img->xmin - (img->x0) * (img->xmax - img->xmin) / 2;
-		img->xmax = img->xmax + (1 - img->x0) * (img->xmax - img->xmin) / 2;
-		img->ymin = img->ymin - (img->y0) * (img->ymax - img->ymin) / 2;
-		img->ymax = img->ymax + (1 - img->y0) * (img->ymax - img->ymin) / 2;
+		width = (img->xmax - img->xmin) * zoomFactor;
+		height = (img->ymax - img->ymin) * zoomFactor;
+		img->xmin = img->xmin - img->x0 * (width - (img->xmax - img->xmin));
+		img->xmax = img->xmin + width;
+		img->ymin = img->ymin - img->y0 * (height - (img->ymax - img->ymin));
+		img->ymax = img->ymin + height;
 	}
 	refresh_image(img);
 	return (0);

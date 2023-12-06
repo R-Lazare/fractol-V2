@@ -29,6 +29,8 @@ int	main_mandelbrot(t_data img)
 	img.colorset = getlist(img.colorint, img, img.colorint * 10000);
 	img.colorpalette = colors(img.max_iter, img);
 	img.cos = log(1.4 - (0.75 + cos(img.colorint * 0.1) / 3));
+	img.modf = 0;
+	img.burning_ship = 0;
 	img.current_fractal = &mandelbrot;
 	calc_log(&img);
 	img.mlx = mlx_init();
