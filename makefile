@@ -2,10 +2,10 @@ NAME	=	fractol
 
 CC	=	cc
 
-SRC =	fractol.c Mandelbrot.c utils.c minihelper.c ft_atod.c arena.c arena_alloc.c colors.c
+SRC =	fractol.c Mandelbrot.c minihelper.c ft_atod.c arena.c arena_alloc.c colors.c
 
 OBJ = ${SRC:.c=.o}
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror -O3
 
 .c.o:
 	@$(CC) $(CFLAGS) -I/minilibx-linux -c $< -o $(<:.c=.o)

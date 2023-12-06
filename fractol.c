@@ -15,8 +15,8 @@
 int	main_mandelbrot(t_data img)
 {
 	img.zoom = 0;
-	img.width = 900;
-	img.height = 600;
+	img.width = 1500;
+	img.height = img.width * 0.75;
 	img.xmin = -2;
 	img.power = 2;
 	img.max_iter = 20;
@@ -26,13 +26,15 @@ int	main_mandelbrot(t_data img)
 	img.ymax = 1;
 	img.x0 = (img.xmax - img.xmin) / 2;
 	img.y0 = (img.ymax - img.ymin) / 2;
-	img.colorset = getlist(img.colorint, img, img.colorint * 200);
+	img.colorset = getlist(img.colorint, img, img.colorint * 10000);
 	img.colorpalette = colors(img.max_iter, img);
+	img.cos = log(1.4 - (0.75 + cos(img.colorint * 0.1) / 3));
+	img.current_fractal = &mandelbrot;
+	calc_log(&img);
 	img.mlx = mlx_init();
 	img.win = mlx_new_window(img.mlx, img.width, img.height, "Mandelbrot");
 	img.img = mlx_new_image(img.mlx, img.width, img.height);
 	img.addr = mlx_get_data_addr(img.img, &img.bpp, &img.ll, &img.endian);
-	img.current_fractal = &mandelbrot;
 	img.current_fractal(img);
 	mlx_mouse_hook(img.win, mouse_hook, &img);
 	mlx_key_hook(img.win, key_hook, &img);

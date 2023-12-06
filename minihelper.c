@@ -24,8 +24,7 @@ void	refresh_image(t_data *img)
 {
 	mlx_destroy_image(img->mlx, img->img);
 	img->img = mlx_new_image(img->mlx, img->width, img->height);
-	img->addr = mlx_get_data_addr(img->img, &img->bpp,
-			&img->ll, &img->endian);
+	img->addr = mlx_get_data_addr(img->img, &img->bpp, &img->ll, &img->endian);
 	img->current_fractal(*img);
 	mlx_put_image_to_window(img->mlx, img->win, img->img, 0, 0);
 }
@@ -54,8 +53,45 @@ int	key_hook_arrows(int keycode, t_data *img)
 	}
 	if (keycode == 50 || keycode == 39)
 		img->c1 -= 0.04;
-	refresh_image(img);
 	return (0);
+}
+
+void	expend_colorset(int n, t_data *img)
+{
+	t_cls	*next;
+	int		i;
+
+	next = img->colorset;
+	while (next->next)
+		next = next->next;
+	next->next = getlist(img->colorint, *img, n);
+	i = 0;
+	next = img->colorset;
+	while (next->next && i < n)
+	{
+		next = next->next;
+		i++;
+	}
+	return ;
+}
+
+void	reboot(t_data *img)
+{
+	img->zoom = 0;
+	img->width = 1500;
+	img->height = img->width * 0.75;
+	img->xmin = -2;
+	img->power = 2;
+	img->max_iter = 20;
+	img->xmax = 1;
+	img->ymin = -1;
+	img->ymax = 1;
+	img->x0 = (img->xmax - img->xmin) / 2;
+	img->y0 = (img->ymax - img->ymin) / 2;
+	img->colorset = getlist(img->colorint + 1, *img, img->colorint * 10000);
+	img->colorpalette = colors(img->max_iter, *img);
+	img->cos = log(1.4 - (0.75 + cos(img->colorint * 0.1) / 3));
+	refresh_image(img);
 }
 
 int	key_hook(int keycode, t_data *img)
@@ -68,11 +104,12 @@ int	key_hook(int keycode, t_data *img)
 		img->max_iter -= 5;
 	if (img->max_iter < 1)
 		img->max_iter = 1;
+	if (keycode == 114)
+		reboot(img);
 	if (keycode == 32)
 	{
 		img->colorint = img->colorint + 1 * (img->max_iter > img->colorint);
-		img->colorset = getlist(img->colorint, *img, img->colorint * 200);
-		img->colorpalette = colors(img->max_iter, *img);
+		expend_colorset(50, img);
 	}
 	if (keycode == 51 || keycode == 38)
 		img->c2 += 0.04;
@@ -86,6 +123,7 @@ int	key_hook(int keycode, t_data *img)
 		img->power -= 1;
 	else
 		key_hook_arrows(keycode, img);
+	img->colorpalette = colors(img->max_iter, *img);
 	refresh_image(img);
 	return (0);
 }
@@ -102,7 +140,7 @@ int	mouse_hook(int button, int x, int y, t_data *img)
 		img->ymin = img->ymin + (img->y0) * (img->ymax - img->ymin) / 2;
 		img->ymax = img->ymax - (1 - img->y0) * (img->ymax - img->ymin) / 2;
 	}
-	if (button == 5)
+	if (button == 5 && img->zoom > 0)
 	{
 		img->zoom--;
 		img->xmin = img->xmin - (img->x0) * (img->xmax - img->xmin) / 2;

@@ -29,7 +29,7 @@ static inline t_c	pow_i(t_c z, int power)
 	return (z);
 }
 
-static int	mandelbrot_calc(t_c c, t_data img, double cos)
+static int	mandelbrot_calc(t_c c, t_data img)
 {
 	t_c		z;
 	int		i;
@@ -49,7 +49,22 @@ static int	mandelbrot_calc(t_c c, t_data img, double cos)
 	{
 		return (i);
 	}
-	return (i + 1 - log(log(mod_sq)) / cos);
+	return (i + img.logt[(int)(mod_sq * 1000)] / img.cos);
+}
+
+void	calc_log(t_data *img)
+{
+	double	*logt;
+	int		i;
+
+	i = 0;
+	logt = arena_alloc(img->arena, 6001 * sizeof(double));
+	while (i < 6001)
+	{
+		logt[i] = 1 - log(log(i / 1000)) / img->cos;
+		i++;
+	}
+	img->logt = logt;
 }
 
 int	mandelbrot(t_data img)
@@ -60,14 +75,14 @@ int	mandelbrot(t_data img)
 
 	img.cos = log(1.4 - (0.75 + cos(img.colorint * 0.1) / 3));
 	x = 0;
-	while (x <= img.width)
+	while (x <= img.width - 1)
 	{
 		y = 0;
-		while (y <= img.height)
+		while (y <= img.height - 1)
 		{
 			m = mandelbrot_calc((t_c){.re = img.xmin + (x / img.width)
 				* (img.xmax - img.xmin), .img = img.ymin + (y / img.height)
-				* (img.ymax - img.ymin)}, img, img.cos);
+				* (img.ymax - img.ymin)}, img);
 			my_pixel_put(&img, (int)x, (int)y, img.colorpalette[m]);
 			y++;
 		}
