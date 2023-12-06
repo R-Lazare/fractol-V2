@@ -74,6 +74,7 @@ typedef struct nb_c
 }			t_c;
 
 int			facto(int n);
+int			julia(t_data img);
 void		calc_log(t_data *img);
 void		expend_colorset(int n, t_data *img);
 void		my_pixel_put(t_data *data, int x, int y, int color);

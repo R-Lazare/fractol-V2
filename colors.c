@@ -24,8 +24,7 @@ static double	*getlist_helper(double b, int n, t_data img)
 		if (i == 0)
 			rs[i] = 0.5 + b * 0.0001;
 		else
-			rs[i] = (3.98 + ((3.983 - 3.98) / n) * i) * rs[i - 1] * (1 - rs[i
-				- 1]);
+			rs[i] = (3.98 + ((3.983 - 3.98) / n) * i ) * rs[i - 1] * (1 - rs[i - 1]);
 		i++;
 	}
 	return (rs);
@@ -43,7 +42,7 @@ t_cls	*getlist(double b, t_data img, int n)
 	u = getlist_helper(b, n * 4, img);
 	x = arena_alloc(img.arena, n * sizeof(int));
 	while (j++ < n)
-		x[j] = round(u[j % n] * 255);
+		x[j] = round(u[j % n] * 21 * img.colorint);
 	j = 0;
 	list = arena_alloc(img.arena, sizeof(t_cls));
 	next = list;
@@ -61,9 +60,9 @@ t_cls	*getlist(double b, t_data img, int n)
 
 int	*colors_helper(int m, int max_iter, t_data img, t_cls *colorset)
 {
-	int		*color;
-	int		i;
-	int		c;
+	int	*color;
+	int	i;
+	int	c;
 	t_cls	*next;
 
 	if (img.colorint > max_iter / 2 - 1)
@@ -89,9 +88,9 @@ int	*colors_helper(int m, int max_iter, t_data img, t_cls *colorset)
 
 int	*colors(int max_iter, t_data img)
 {
-	int		*color;
-	int		i;
-	int		*list;
+	int	*color;
+	int	i;
+	int	*list;
 	t_cls	*next;
 
 	list = (int *)arena_alloc(img.arena, sizeof(int) * max_iter);

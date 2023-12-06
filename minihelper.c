@@ -79,16 +79,27 @@ void	reboot(t_data *img)
 {
 	img->zoom = 0;
 	img->width = 1500;
-	img->height = img->width * 0.75;
-	img->xmin = -2;
+	if (img->current_fractal == &mandelbrot)
+	{
+		img->height = img->width * 0.75;
+		img->xmin = -2;
+		img->ymin = -1;
+		img->ymax = 1;
+	}
+	else if (img->current_fractal == &julia)
+	{
+		img->height = img->width;
+		img->xmin = -1;
+		img->ymin = -1.2;
+		img->ymax = 1.2;
+	}
+	img->xmax = 1;
 	img->power = 2;
 	img->max_iter = 20;
-	img->xmax = 1;
-	img->ymin = -1;
-	img->ymax = 1;
 	img->x0 = (img->xmax - img->xmin) / 2;
 	img->y0 = (img->ymax - img->ymin) / 2;
 	img->colorset = getlist(img->colorint + 1, *img, img->colorint * 10000);
+	img->colorint = img->colorint % 7;
 	img->colorpalette = colors(img->max_iter, *img);
 	img->cos = log(1.4 - (0.75 + cos(img->colorint * 0.1) / 3));
 	refresh_image(img);
@@ -96,12 +107,24 @@ void	reboot(t_data *img)
 
 int	key_hook(int keycode, t_data *img)
 {
+	if (keycode == 106)
+	{
+		if (img->current_fractal == &mandelbrot)
+		{
+			img->current_fractal = &julia;
+			img->c1 = 0;
+			img->c2 = 0;
+		}
+		else if (img->current_fractal == &julia)
+			img->current_fractal = &mandelbrot;
+		reboot(img);
+	}
 	if (keycode == 65307)
 		freeall(img);
 	if (keycode == 65451)
-		img->max_iter += 5;
+		img->max_iter += 3;
 	if (keycode == 65453)
-		img->max_iter -= 5;
+		img->max_iter -= 2;
 	if (img->max_iter < 1)
 		img->max_iter = 1;
 	if (keycode == 114)
@@ -109,7 +132,7 @@ int	key_hook(int keycode, t_data *img)
 	if (keycode == 32)
 	{
 		img->colorint = img->colorint + 1 * (img->max_iter > img->colorint);
-		expend_colorset(50, img);
+		expend_colorset(1, img);
 	}
 	if (keycode == 51 || keycode == 38)
 		img->c2 += 0.04;
@@ -117,9 +140,9 @@ int	key_hook(int keycode, t_data *img)
 		img->c2 -= 0.04;
 	if (keycode == 49 || keycode == 34)
 		img->c1 += 0.04;
-	if (keycode == 112)
+	if (keycode == 112 && img->power < 9)
 		img->power += 1;
-	if (keycode == 111)
+	if (keycode == 111 && img->power > 1)
 		img->power -= 1;
 	else
 		key_hook_arrows(keycode, img);
@@ -140,7 +163,7 @@ int	mouse_hook(int button, int x, int y, t_data *img)
 		img->ymin = img->ymin + (img->y0) * (img->ymax - img->ymin) / 2;
 		img->ymax = img->ymax - (1 - img->y0) * (img->ymax - img->ymin) / 2;
 	}
-	if (button == 5 && img->zoom > 0)
+	if (button == 5 && (img->zoom > 0 || img->current_fractal == &julia))
 	{
 		img->zoom--;
 		img->xmin = img->xmin - (img->x0) * (img->xmax - img->xmin) / 2;

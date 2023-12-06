@@ -24,8 +24,11 @@ static inline double	module_sq(t_c z)
 
 static inline t_c	pow_i(t_c z, int power)
 {
+	t_c	z0;
+
+	z0 = z;
 	while (power-- > 1)
-		z = (t_c){.re = z.re * z.re - z.img * z.img, .img = 2 * z.re * z.img};
+		z = (t_c){.re = z.re * z0.re - z.img * z0.img, .img = z0.re * z.img + z0.img * z.re};
 	return (z);
 }
 
