@@ -6,7 +6,7 @@
 /*   By: rluiz <rluiz@student.42lehavre.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 16:32:00 by rluiz             #+#    #+#             */
-/*   Updated: 2023/12/05 18:25:02 by rluiz            ###   ########.fr       */
+/*   Updated: 2023/12/06 17:29:59 by rluiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,9 @@ void	refresh_image(t_data *img)
 {
 	mlx_destroy_image(img->mlx, img->img);
 	img->img = mlx_new_image(img->mlx, img->width, img->height);
-	img->addr = mlx_get_data_addr(img->img, &img->bpp, &img->ll, &img->endian);
+	img->addr = mlx_get_data_addr(img->img, &img->bpp, &img->ll, &img->endian);	
 	img->current_fractal(*img);
 	mlx_put_image_to_window(img->mlx, img->win, img->img, 0, 0);
-	printf("zoom: %d, max_iter: %d, power: %d, colorint: %d, modf: %d, c1: %f, c2: %f, burn: %d, julia: %d\n", img->zoom, img->max_iter, img->power, img->colorint, img->modf, img->c1, img->c2, img->burning_ship, img->current_fractal == &julia);
 }
 
 int	key_hook_arrows(int keycode, t_data *img)
@@ -77,7 +76,7 @@ void	expend_colorset(int n, t_data *img)
 void	reboot(t_data *img)
 {
 	img->zoom = 0;
-	img->width = 1500;
+	img->width = 1350;
 	if (img->current_fractal == &mandelbrot)
 	{
 		img->height = img->width * 0.75;
@@ -106,8 +105,13 @@ void	reboot(t_data *img)
 
 int	key_hook(int keycode, t_data *img)
 {
+	if (keycode == 104)
+		printf("zoom: %d, max_iter: %d, power: %d, colorint: %d, modf: %d, c1: %f, c2: %f, burn: %d, julia: %d\n", img->zoom, img->max_iter, img->power, img->colorint, img->modf, img->c1, img->c2, img->burning_ship, img->current_fractal == &julia);
 	if (keycode == 115)
+	{
 		save_image_to_bmp(img);
+		return (0);
+	}
 	if (keycode == 98)
 	{
 		img->burning_ship = !img->burning_ship;
@@ -115,7 +119,7 @@ int	key_hook(int keycode, t_data *img)
 	}
 	if (keycode == 120 && img->modf < 200)
 		img->modf++;
-	if (keycode == 119 && img->modf > -12)
+	if ((keycode == 119 || keycode == 120) && img->modf > -12)
 		img->modf--;
 	if (keycode == 106)
 	{
@@ -149,19 +153,19 @@ int	key_hook(int keycode, t_data *img)
 	}
 	if (keycode == 51 || keycode == 38)
 		img->c2 += 0.04;
-	if (keycode == 65289)
+	if (keycode == 65289 || keycode == 119)
 		img->c2 += 0.005;
 	if (keycode == 52 || keycode == 233)
 		img->c2 -= 0.04;
-	if (keycode == 97)
+	if (keycode == 97 || keycode == 101)
 		img->c2 -= 0.005;
 	if (keycode == 49 || keycode == 34)
 		img->c1 += 0.04;
-	if (keycode == 122)
+	if (keycode == 122 || keycode == 65289)
 		img->c1 += 0.005;
 	if (keycode == 50 || keycode == 39)
 		img->c1 -= 0.04;
-	if (keycode == 101)
+	if (keycode == 113) //
 		img->c1 -= 0.005;
 	if (keycode == 112 && img->power < 9)
 		img->power += 1;

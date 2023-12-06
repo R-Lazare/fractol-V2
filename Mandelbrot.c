@@ -6,11 +6,35 @@
 /*   By: rluiz <rluiz@student.42lehavre.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 16:32:10 by rluiz             #+#    #+#             */
-/*   Updated: 2023/12/05 19:59:36 by rluiz            ###   ########.fr       */
+/*   Updated: 2023/12/06 17:58:20 by rluiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
+
+inline double	custom_fabs(double x)
+{
+	uint64_t	*ptr;
+
+	ptr = (uint64_t *)&x;
+	*ptr &= 0x7FFFFFFFFFFFFFFF;
+	return (x);
+}
+
+void	calc_log(t_data *img)
+{
+	double	*logt;
+	int		i;
+
+	i = 0;
+	logt = arena_alloc(img->arena, 6001 * sizeof(double));
+	while (i < 6001)
+	{
+		logt[i] = 1 - log(log(i / 1000)) / img->cos;
+		i++;
+	}
+	img->logt = logt;
+}
 
 static inline t_c	sum_i(t_c a, t_c b)
 {
@@ -40,36 +64,18 @@ static int	mandelbrot_calc(t_c c, t_data img)
 	int		i;
 	double	mod_sq;
 
-	z.re = 0;
-	z.img = 0;
+	z = (t_c){.re = 0, .img = 0};
 	i = 0;
 	mod_sq = 0;
-	while (i < img.max_iter && mod_sq < 2.6 + img.modf * 0.05)
+	while (i < img.max_iter && mod_sq < 4)
 	{
 		z = sum_i(pow_i(z, img.power, img.burning_ship), c);
 		mod_sq = module_sq(z);
 		i++;
 	}
 	if (i == img.max_iter)
-	{
 		return (i);
-	}
 	return (i + img.logt[(int)(mod_sq * 1000)] / img.cos);
-}
-
-void	calc_log(t_data *img)
-{
-	double	*logt;
-	int		i;
-
-	i = 0;
-	logt = arena_alloc(img->arena, 6001 * sizeof(double));
-	while (i < 6001)
-	{
-		logt[i] = 1 - log(log(i / 1000)) / img->cos;
-		i++;
-	}
-	img->logt = logt;
 }
 
 int	mandelbrot(t_data img)
@@ -97,7 +103,10 @@ int	mandelbrot(t_data img)
 
 void save_image_to_bmp(t_data *img)
 {
-    FILE *file = fopen("image.bmp", "wb");
+    char *filename;
+    filename = arena_alloc(img->arena, 100 * sizeof(char));
+    sprintf(filename, "img_%d-%d-%d-%f-%f-%d-%d.bmp", img->max_iter, img->power, img->colorint, img->c1, img->c2, img->burning_ship, img->current_fractal == &julia);
+    FILE *file = fopen(filename, "wb");
     if (!file) return;
 
     int paddedRowSize = (img->width * 3 + 3) & (~3);
