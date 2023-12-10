@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minihelper.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rluiz <rluiz@student.42lehavre.fr>         +#+  +:+       +#+        */
+/*   By: rluiz <rluiz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 16:32:00 by rluiz             #+#    #+#             */
-/*   Updated: 2023/12/06 17:29:59 by rluiz            ###   ########.fr       */
+/*   Updated: 2023/12/10 18:39:42 by rluiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,23 +33,23 @@ int	key_hook_arrows(int keycode, t_data *img)
 {
 	if (keycode == 65362)
 	{
-		img->ymin = img->ymin - 0.1 * (1 / cosh(pow(img->zoom, 0.75)));
-		img->ymax = img->ymax - 0.1 * (1 / cosh(pow(img->zoom, 0.75)));
+		img->ymin = img->ymin - 0.1;
+		img->ymax = img->ymax - 0.1;
 	}
 	if (keycode == 65364)
 	{
-		img->ymin = img->ymin + 0.1 * (1 / cosh(pow(img->zoom, 0.75)));
-		img->ymax = img->ymax + 0.1 * (1 / cosh(pow(img->zoom, 0.75)));
+		img->ymin = img->ymin + 0.1;
+		img->ymax = img->ymax + 0.1;
 	}
 	if (keycode == 65361)
 	{
-		img->xmin = img->xmin - 0.1 * (1 / cosh(pow(img->zoom, 0.75)));
-		img->xmax = img->xmax - 0.1 * (1 / cosh(pow(img->zoom, 0.75)));
+		img->xmin = img->xmin - 0.1;
+		img->xmax = img->xmax - 0.1;
 	}
 	if (keycode == 65363)
 	{
-		img->xmin = img->xmin + 0.1 * (1 / cosh(pow(img->zoom, 0.75)));
-		img->xmax = img->xmax + 0.1 * (1 / cosh(pow(img->zoom, 0.75)));
+		img->xmin = img->xmin + 0.1;
+		img->xmax = img->xmax + 0.1;
 	}
 	return (0);
 }
@@ -76,13 +76,13 @@ void	expend_colorset(int n, t_data *img)
 void	reboot(t_data *img)
 {
 	img->zoom = 0;
-	img->width = 1350;
+	img->width = 2850;
 	if (img->current_fractal == &mandelbrot)
 	{
-		img->height = img->width * 0.75;
-		img->xmin = -2;
-		img->ymin = -1;
-		img->ymax = 1;
+		img->height = img->width * 1;
+		img->xmin = -1.8;
+		img->ymin = -1.8;
+		img->ymax = 1.2;
 	}
 	else if (img->current_fractal == &julia)
 	{
@@ -91,7 +91,7 @@ void	reboot(t_data *img)
 		img->ymin = -1.2;
 		img->ymax = 1.2;
 	}
-	img->xmax = 1;
+	img->xmax = 1.2;
 	img->power = 2;
 	img->max_iter = 20;
 	img->modf = 0;
@@ -105,6 +105,10 @@ void	reboot(t_data *img)
 
 int	key_hook(int keycode, t_data *img)
 {
+	if (keycode == 65437)
+		img->precision /= 10000;
+	if (keycode == 65430)
+		img->precision *= 1000;
 	if (keycode == 104)
 		printf("zoom: %d, max_iter: %d, power: %d, colorint: %d, modf: %d, c1: %f, c2: %f, burn: %d, julia: %d\n", img->zoom, img->max_iter, img->power, img->colorint, img->modf, img->c1, img->c2, img->burning_ship, img->current_fractal == &julia);
 	if (keycode == 115)
@@ -167,9 +171,9 @@ int	key_hook(int keycode, t_data *img)
 		img->c1 -= 0.04;
 	if (keycode == 113) //
 		img->c1 -= 0.005;
-	if (keycode == 112 && img->power < 9)
+	if (keycode == 112)// && img->power < 9)
 		img->power += 1;
-	if (keycode == 111 && img->power > 1)
+	if (keycode == 111)// && img->power > 1)
 		img->power -= 1;
 	else
 		key_hook_arrows(keycode, img);
@@ -197,7 +201,7 @@ int	mouse_hook(int button, int x, int y, t_data *img)
 		img->ymin = img->ymin + img->y0 * height;
 		img->ymax = img->ymin + height;
 	}
-	else if (button == 5 && img->zoom > 0)
+	else if (button == 5)// && img->zoom > 0)
 	{
 		img->zoom--;
 		width = (img->xmax - img->xmin) * zoomFactor;

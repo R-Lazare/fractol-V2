@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   colors.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rluiz <rluiz@student.42lehavre.fr>         +#+  +:+       +#+        */
+/*   By: rluiz <rluiz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 18:48:13 by rluiz             #+#    #+#             */
-/*   Updated: 2023/07/18 19:48:41 by rluiz            ###   ########.fr       */
+/*   Updated: 2023/12/10 18:13:29 by rluiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static double	*getlist_helper(double b, int n, t_data img)
 	while (i < n)
 	{
 		if (i == 0)
-			rs[i] = 0.5 + b * 0.0001;
+			rs[i] = 0.5 + b * 0.001;
 		else
 			rs[i] = (3.98 + ((3.983 - 3.98) / n) * i ) * rs[i - 1] * (1 - rs[i - 1]);
 		i++;

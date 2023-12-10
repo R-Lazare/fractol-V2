@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fractol.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rluiz <rluiz@student.42lehavre.fr>         +#+  +:+       +#+        */
+/*   By: rluiz <rluiz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 18:08:21 by rluiz             #+#    #+#             */
-/*   Updated: 2023/12/06 17:25:28 by rluiz            ###   ########.fr       */
+/*   Updated: 2023/12/10 18:26:24 by rluiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,22 +15,26 @@
 int	main_mandelbrot(t_data img)
 {
 	img.zoom = 0;
-	img.width = 1500;
-	img.height = img.width * 0.75;
-	img.xmin = -2;
+	img.width = 2850;
+	img.height = img.width * 1;
+	img.xmin = -1.8;
 	img.power = 2;
 	img.max_iter = 20;
-	img.xmax = 1;
-	img.colorint = 1;
-	img.ymin = -1;
-	img.ymax = 1;
+	img.xmax = 1.2;
+	img.colorint = 7;
+	img.ymin = -1.8;
+	img.ymax = 1.2;
+	img.c1 = -2.88;
+	img.c2 = -2.88;
+	img.power = 5;
 	img.x0 = (img.xmax - img.xmin) / 2;
 	img.y0 = (img.ymax - img.ymin) / 2;
-	img.colorset = getlist(img.colorint, img, img.colorint * 10000);
+	img.colorset = getlist(img.colorint, img, 10000000);
 	img.colorpalette = colors(img.max_iter, img);
 	img.cos = log(1.4 - (0.75 + cos(img.colorint * 0.1) / 3));
 	img.modf = 0;
-	img.burning_ship = 0;
+	img.precision = 0.00000000000000000000000001;
+	img.burning_ship = 1;
 	img.current_fractal = &mandelbrot;
 	calc_log(&img);
 	img.mlx = mlx_init();

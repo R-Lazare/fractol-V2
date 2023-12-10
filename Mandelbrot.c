@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Mandelbrot.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rluiz <rluiz@student.42lehavre.fr>         +#+  +:+       +#+        */
+/*   By: rluiz <rluiz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 16:32:10 by rluiz             #+#    #+#             */
-/*   Updated: 2023/12/06 17:58:20 by rluiz            ###   ########.fr       */
+/*   Updated: 2023/12/10 17:03:38 by rluiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,63 @@ static inline t_c	pow_i(t_c z, int power, int burn)
 	return (z);
 }
 
+static inline t_c     mandelbrot_op(t_c z, t_c c)
+{
+    return ((t_c){.re = z.re * z.re + z.img * z.img + c.re, .img = 2 * z.re * z.img + c.img});
+}
+
+static inline t_c division_i(t_c a, t_c b)
+{
+    double	denom;
+
+    denom = b.re * b.re + b.img * b.img;
+    return ((t_c){.re = (a.re * b.re + a.img * b.img) / denom,
+        .img = (a.img * b.re - a.re * b.img) / denom});
+}
+
+static inline t_c     multiplication(int a, t_c b)
+{
+    return ((t_c){.re = a * b.re, .img = a * b.img});
+}
+
+static  inline t_c     custom_op(t_c z, t_data img)
+{
+    return (sum_i(pow_i(z, img.power, img.burning_ship), (t_c){.re = img.c1 * z.re, .img = img.c2 * z.img}));
+}
+
+static  inline t_c     dcustom_op(t_c z, t_data img)
+{
+    return (sum_i(multiplication(img.power, pow_i(z, img.power - 1, img.burning_ship)), (t_c){.re = img.c2, .img = 0}));
+}
+
+static inline int	custom_calc(t_c c, t_data img)
+{
+    t_c    next_c;
+    t_c fz;
+    t_c    dfz;
+    t_c   fz2;
+    int    i;
+
+    next_c = (t_c){.re = c.re + 1, .img = c.img + 1};
+    i = 0;
+    while (i < img.max_iter)
+    {
+        fz = custom_op(next_c, img);
+        dfz = dcustom_op(next_c, img);
+        fz2 = division_i(fz, dfz);
+        next_c = (t_c){.re = next_c.re - fz2.re, .img = next_c.img - fz2.img};
+        if (module_sq(fz) < img.precision)
+            break ;
+        i++;
+    }
+    if (i == img.max_iter)
+        return (0);
+    if (module_sq(fz) < img.precision)
+        return (i);
+    return (i + img.logt[(int)(module_sq(fz) / img.precision)] / img.cos);
+}
+
+/*
 static int	mandelbrot_calc(t_c c, t_data img)
 {
 	t_c		z;
@@ -69,14 +126,14 @@ static int	mandelbrot_calc(t_c c, t_data img)
 	mod_sq = 0;
 	while (i < img.max_iter && mod_sq < 4)
 	{
-		z = sum_i(pow_i(z, img.power, img.burning_ship), c);
+		z = mandelbrot_op(z, c);
 		mod_sq = module_sq(z);
 		i++;
 	}
 	if (i == img.max_iter)
 		return (i);
 	return (i + img.logt[(int)(mod_sq * 1000)] / img.cos);
-}
+}*/
 
 int	mandelbrot(t_data img)
 {
@@ -90,7 +147,7 @@ int	mandelbrot(t_data img)
 		y = 0;
 		while (y <= img.height - 1)
 		{
-			m = mandelbrot_calc((t_c){.re = img.xmin + (x / img.width)
+			m = custom_calc((t_c){.re = img.xmin + (x / img.width)
 				* (img.xmax - img.xmin), .img = img.ymin + (y / img.height)
 				* (img.ymax - img.ymin)}, img);
 			my_pixel_put(&img, (int)x, (int)y, img.colorpalette[m]);

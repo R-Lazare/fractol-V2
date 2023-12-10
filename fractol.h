@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fractol.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rluiz <rluiz@student.42lehavre.fr>         +#+  +:+       +#+        */
+/*   By: rluiz <rluiz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/15 17:37:11 by rluiz             #+#    #+#             */
-/*   Updated: 2023/12/06 16:00:42 by rluiz            ###   ########.fr       */
+/*   Updated: 2023/12/10 16:01:58 by rluiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ typedef struct s_data
 	double	c2;
 	double	xmax;
 	int		colorint;
+	double		precision;
 	double	ymin;
 	double	ymax;
 	double	x0;
