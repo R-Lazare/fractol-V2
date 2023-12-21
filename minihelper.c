@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minihelper.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rluiz <rluiz@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rluiz <rluiz@student.42lehavre.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 16:32:00 by rluiz             #+#    #+#             */
-/*   Updated: 2023/12/10 18:39:42 by rluiz            ###   ########.fr       */
+/*   Updated: 2023/12/21 19:18:37 by rluiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void	expend_colorset(int n, t_data *img)
 void	reboot(t_data *img)
 {
 	img->zoom = 0;
-	img->width = 2850;
+	img->width = 600;
 	if (img->current_fractal == &mandelbrot)
 	{
 		img->height = img->width * 1;
@@ -113,7 +113,7 @@ int	key_hook(int keycode, t_data *img)
 		printf("zoom: %d, max_iter: %d, power: %d, colorint: %d, modf: %d, c1: %f, c2: %f, burn: %d, julia: %d\n", img->zoom, img->max_iter, img->power, img->colorint, img->modf, img->c1, img->c2, img->burning_ship, img->current_fractal == &julia);
 	if (keycode == 115)
 	{
-		save_image_to_bmp(img);
+		save_fdf(img);
 		return (0);
 	}
 	if (keycode == 98)

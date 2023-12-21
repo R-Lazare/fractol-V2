@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fractol.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rluiz <rluiz@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rluiz <rluiz@student.42lehavre.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/15 17:37:11 by rluiz             #+#    #+#             */
-/*   Updated: 2023/12/10 16:01:58 by rluiz            ###   ########.fr       */
+/*   Updated: 2023/12/21 18:34:23 by rluiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ typedef struct nb_c
 }			t_c;
 
 double		custom_fabs(double x);
+void save_fdf(t_data *img);
 int			facto(int n);
 void		save_image_to_bmp(t_data *img);
 int			julia(t_data img);

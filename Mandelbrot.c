@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Mandelbrot.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rluiz <rluiz@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rluiz <rluiz@student.42lehavre.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 16:32:10 by rluiz             #+#    #+#             */
-/*   Updated: 2023/12/10 17:03:38 by rluiz            ###   ########.fr       */
+/*   Updated: 2023/12/21 19:10:04 by rluiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,10 @@ static inline t_c	pow_i(t_c z, int power, int burn)
 	return (z);
 }
 
-static inline t_c     mandelbrot_op(t_c z, t_c c)
-{
-    return ((t_c){.re = z.re * z.re + z.img * z.img + c.re, .img = 2 * z.re * z.img + c.img});
-}
+// static inline t_c     mandelbrot_op(t_c z, t_c c)
+// {
+//     return ((t_c){.re = z.re * z.re + z.img * z.img + c.re, .img = 2 * z.re * z.img + c.img});
+// }
 
 static inline t_c division_i(t_c a, t_c b)
 {
@@ -114,7 +114,12 @@ static inline int	custom_calc(t_c c, t_data img)
     return (i + img.logt[(int)(module_sq(fz) / img.precision)] / img.cos);
 }
 
-/*
+
+static inline t_c	mandelbrot_op(t_c z, t_c c, int burn)
+{
+	return (sum_i(pow_i(z, 2, burn), c));
+}
+
 static int	mandelbrot_calc(t_c c, t_data img)
 {
 	t_c		z;
@@ -124,17 +129,16 @@ static int	mandelbrot_calc(t_c c, t_data img)
 	z = (t_c){.re = 0, .img = 0};
 	i = 0;
 	mod_sq = 0;
-	while (i < img.max_iter && mod_sq < 4)
+	while (i < img.max_iter && mod_sq < 3)
 	{
-		z = mandelbrot_op(z, c);
+		z = mandelbrot_op(z, c, img.burning_ship);
 		mod_sq = module_sq(z);
 		i++;
 	}
 	if (i == img.max_iter)
 		return (i);
-	return (i + img.logt[(int)(mod_sq * 1000)] / img.cos);
-}*/
-
+	return (i);
+}
 int	mandelbrot(t_data img)
 {
 	double	x;
@@ -147,7 +151,7 @@ int	mandelbrot(t_data img)
 		y = 0;
 		while (y <= img.height - 1)
 		{
-			m = custom_calc((t_c){.re = img.xmin + (x / img.width)
+			m = mandelbrot_calc((t_c){.re = img.xmin + (x / img.width)
 				* (img.xmax - img.xmin), .img = img.ymin + (y / img.height)
 				* (img.ymax - img.ymin)}, img);
 			my_pixel_put(&img, (int)x, (int)y, img.colorpalette[m]);
@@ -220,6 +224,28 @@ void save_image_to_bmp(t_data *img)
         // Padding for row
         unsigned char padding[3] = {0, 0, 0};
         fwrite(padding, 1, paddedRowSize - img->width * 3, file);
+    }
+
+    fclose(file);
+}
+
+void save_fdf(t_data *img)
+{
+    char *filename;
+    filename = arena_alloc(img->arena, 100 * sizeof(char));
+    sprintf(filename, "img_%d-%d-%d-%f-%f-%d-%d.fdf", img->max_iter, img->power, img->colorint, img->c1, img->c2, img->burning_ship, img->current_fractal == &julia);
+    FILE *file = fopen(filename, "w");
+    if (!file) return;
+    for (int y = img->height - 1; y >= 0; y--) {
+        for (int x = 0; x < img->width; x++) {
+            // Get pixel data from mlx image (BGR format)
+            int pixel = *(int *)(img->addr + (y * img->ll + x * (img->bpp / 8)));
+            if (pixel == 0)
+                fprintf(file, "%d ", 100);
+            else
+                fprintf(file, "%d ", (int)(pixel / 733600));
+        }
+        fprintf(file, "\n");
     }
 
     fclose(file);
