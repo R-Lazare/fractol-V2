@@ -3,17 +3,17 @@ Flat profile:
 Each sample counts as 0.01 seconds.
   %   cumulative   self              self     total           
  time   seconds   seconds    calls  ms/call  ms/call  name    
-100.09      0.06     0.06        2    30.03    30.03  mandelbrot
-  0.00      0.06     0.00  2880000     0.00     0.00  my_pixel_put
-  0.00      0.06     0.00       71     0.00     0.00  arena_alloc
-  0.00      0.06     0.00        2     0.00     0.00  colors
-  0.00      0.06     0.00        2     0.00    15.01  key_hook
-  0.00      0.06     0.00        1     0.00     0.00  arena_destroy
-  0.00      0.06     0.00        1     0.00     0.00  arena_init
-  0.00      0.06     0.00        1     0.00     0.00  calc_log
-  0.00      0.06     0.00        1     0.00     0.00  freeall
-  0.00      0.06     0.00        1     0.00     0.00  getlist
-  0.00      0.06     0.00        1     0.00    30.03  main_mandelbrot
+ 66.72      0.02     0.02        2    10.01    15.01  mandelbrot
+ 33.36      0.03     0.01  1215000     0.00     0.00  my_pixel_put
+  0.00      0.03     0.00     2546     0.00     0.00  arena_alloc
+  0.00      0.03     0.00        2     0.00     0.00  colors
+  0.00      0.03     0.00        2     0.00     7.51  key_hook
+  0.00      0.03     0.00        1     0.00     0.00  arena_destroy
+  0.00      0.03     0.00        1     0.00     0.00  arena_init
+  0.00      0.03     0.00        1     0.00     0.00  calc_log
+  0.00      0.03     0.00        1     0.00     0.00  freeall
+  0.00      0.03     0.00        1     0.00     0.00  getlist
+  0.00      0.03     0.00        1     0.00    15.01  main_mandelbrot
 
  %         the percentage of the total running time of the
 time       program used by this function.
@@ -51,48 +51,48 @@ notice and this notice are preserved.
 		     Call graph (explanation follows)
 
 
-granularity: each sample hit covers 2 byte(s) for 16.65% of 0.06 seconds
+granularity: each sample hit covers 2 byte(s) for 33.31% of 0.03 seconds
 
 index % time    self  children    called     name
-                0.03    0.00       1/2           main_mandelbrot [3]
-                0.03    0.00       1/2           key_hook [2]
-[1]    100.0    0.06    0.00       2         mandelbrot [1]
-                0.00    0.00 2880000/2880000     my_pixel_put [6]
+                0.01    0.01       1/2           main_mandelbrot [3]
+                0.01    0.01       1/2           key_hook [2]
+[1]    100.0    0.02    0.01       2         mandelbrot [1]
+                0.01    0.00 1215000/1215000     my_pixel_put [6]
 -----------------------------------------------
-                0.00    0.03       2/2           mlx_loop [5]
-[2]     50.0    0.00    0.03       2         key_hook [2]
-                0.03    0.00       1/2           mandelbrot [1]
+                0.00    0.02       2/2           mlx_loop [5]
+[2]     50.0    0.00    0.02       2         key_hook [2]
+                0.01    0.01       1/2           mandelbrot [1]
                 0.00    0.00       1/1           freeall [12]
                 0.00    0.00       1/2           colors [8]
 -----------------------------------------------
-                0.00    0.03       1/1           main [4]
-[3]     50.0    0.00    0.03       1         main_mandelbrot [3]
-                0.03    0.00       1/2           mandelbrot [1]
+                0.00    0.02       1/1           main [4]
+[3]     50.0    0.00    0.02       1         main_mandelbrot [3]
+                0.01    0.01       1/2           mandelbrot [1]
                 0.00    0.00       1/1           getlist [13]
                 0.00    0.00       1/2           colors [8]
                 0.00    0.00       1/1           calc_log [11]
 -----------------------------------------------
                                                  <spontaneous>
-[4]     50.0    0.00    0.03                 main [4]
-                0.00    0.03       1/1           main_mandelbrot [3]
+[4]     50.0    0.00    0.02                 main [4]
+                0.00    0.02       1/1           main_mandelbrot [3]
                 0.00    0.00       1/1           arena_init [10]
 -----------------------------------------------
                                                  <spontaneous>
-[5]     50.0    0.00    0.03                 mlx_loop [5]
-                0.00    0.03       2/2           key_hook [2]
+[5]     50.0    0.00    0.02                 mlx_loop [5]
+                0.00    0.02       2/2           key_hook [2]
 -----------------------------------------------
-                0.00    0.00 2880000/2880000     mandelbrot [1]
-[6]      0.0    0.00    0.00 2880000         my_pixel_put [6]
+                0.01    0.00 1215000/1215000     mandelbrot [1]
+[6]     33.3    0.01    0.00 1215000         my_pixel_put [6]
 -----------------------------------------------
-                0.00    0.00       1/71          calc_log [11]
-                0.00    0.00      28/71          getlist [13]
-                0.00    0.00      42/71          colors [8]
-[7]      0.0    0.00    0.00      71         arena_alloc [7]
+                0.00    0.00       1/2546        calc_log [11]
+                0.00    0.00      42/2546        colors [8]
+                0.00    0.00    2503/2546        getlist [13]
+[7]      0.0    0.00    0.00    2546         arena_alloc [7]
 -----------------------------------------------
                 0.00    0.00       1/2           main_mandelbrot [3]
                 0.00    0.00       1/2           key_hook [2]
 [8]      0.0    0.00    0.00       2         colors [8]
-                0.00    0.00      42/71          arena_alloc [7]
+                0.00    0.00      42/2546        arena_alloc [7]
 -----------------------------------------------
                 0.00    0.00       1/1           freeall [12]
 [9]      0.0    0.00    0.00       1         arena_destroy [9]
@@ -102,7 +102,7 @@ index % time    self  children    called     name
 -----------------------------------------------
                 0.00    0.00       1/1           main_mandelbrot [3]
 [11]     0.0    0.00    0.00       1         calc_log [11]
-                0.00    0.00       1/71          arena_alloc [7]
+                0.00    0.00       1/2546        arena_alloc [7]
 -----------------------------------------------
                 0.00    0.00       1/1           key_hook [2]
 [12]     0.0    0.00    0.00       1         freeall [12]
@@ -110,7 +110,7 @@ index % time    self  children    called     name
 -----------------------------------------------
                 0.00    0.00       1/1           main_mandelbrot [3]
 [13]     0.0    0.00    0.00       1         getlist [13]
-                0.00    0.00      28/71          arena_alloc [7]
+                0.00    0.00    2503/2546        arena_alloc [7]
 -----------------------------------------------
 
  This table describes the call tree of the program, and was sorted by

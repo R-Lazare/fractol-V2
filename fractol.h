@@ -6,7 +6,7 @@
 /*   By: rluiz <rluiz@student.42lehavre.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/15 17:37:11 by rluiz             #+#    #+#             */
-/*   Updated: 2023/12/21 18:34:23 by rluiz            ###   ########.fr       */
+/*   Updated: 2023/12/22 15:46:24 by rluiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,12 @@ typedef struct s_cls
 	void	*next;
 }			t_cls;
 
+typedef struct nb_c
+{
+	double	re;
+	double	img;
+}			t_c;
+
 typedef struct s_data
 {
 	void	*img;
@@ -59,7 +65,7 @@ typedef struct s_data
 	double	c2;
 	double	xmax;
 	int		colorint;
-	double		precision;
+	double	precision;
 	double	ymin;
 	double	ymax;
 	double	x0;
@@ -70,14 +76,8 @@ typedef struct s_data
 	double	*logt;
 }			t_data;
 
-typedef struct nb_c
-{
-	double	re;
-	double	img;
-}			t_c;
-
 double		custom_fabs(double x);
-void save_fdf(t_data *img);
+void		save_fdf(t_data img);
 int			facto(int n);
 void		save_image_to_bmp(t_data *img);
 int			julia(t_data img);

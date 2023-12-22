@@ -6,7 +6,7 @@
 /*   By: rluiz <rluiz@student.42lehavre.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 18:08:21 by rluiz             #+#    #+#             */
-/*   Updated: 2023/12/21 19:16:34 by rluiz            ###   ########.fr       */
+/*   Updated: 2023/12/22 17:58:50 by rluiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	main_mandelbrot(t_data img)
 {
 	img.zoom = 0;
-	img.width = 600;
+	img.width = 800;
 	img.height = img.width * 0.75;
 	img.xmin = -2.2;
 	img.power = 2;

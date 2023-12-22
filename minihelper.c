@@ -6,7 +6,7 @@
 /*   By: rluiz <rluiz@student.42lehavre.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 16:32:00 by rluiz             #+#    #+#             */
-/*   Updated: 2023/12/21 19:18:37 by rluiz            ###   ########.fr       */
+/*   Updated: 2023/12/22 17:58:54 by rluiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void	expend_colorset(int n, t_data *img)
 void	reboot(t_data *img)
 {
 	img->zoom = 0;
-	img->width = 600;
+	img->width = 800;
 	if (img->current_fractal == &mandelbrot)
 	{
 		img->height = img->width * 1;
@@ -113,7 +113,7 @@ int	key_hook(int keycode, t_data *img)
 		printf("zoom: %d, max_iter: %d, power: %d, colorint: %d, modf: %d, c1: %f, c2: %f, burn: %d, julia: %d\n", img->zoom, img->max_iter, img->power, img->colorint, img->modf, img->c1, img->c2, img->burning_ship, img->current_fractal == &julia);
 	if (keycode == 115)
 	{
-		save_fdf(img);
+		save_fdf(*img);
 		return (0);
 	}
 	if (keycode == 98)
@@ -136,6 +136,19 @@ int	key_hook(int keycode, t_data *img)
 		else if (img->current_fractal == &julia)
 			img->current_fractal = &mandelbrot;
 		reboot(img);
+	}
+	if (keycode == 118)
+	{
+		printf("1 r : %d, g : %d, b : %d\n", img->colorpalette[1] >> 16, (img->colorpalette[1] >> 8) & 0xFF, img->colorpalette[1] & 0xFF);
+		printf("2 r : %d, g : %d, b : %d\n", img->colorpalette[2] >> 16, (img->colorpalette[2] >> 8) & 0xFF, img->colorpalette[2] & 0xFF);
+		printf("3 r : %d, g : %d, b : %d\n", img->colorpalette[3] >> 16, (img->colorpalette[3] >> 8) & 0xFF, img->colorpalette[3] & 0xFF);
+		printf("4 r : %d, g : %d, b : %d\n", img->colorpalette[4] >> 16, (img->colorpalette[4] >> 8) & 0xFF, img->colorpalette[4] & 0xFF);
+		printf("5 r : %d, g : %d, b : %d\n", img->colorpalette[5] >> 16, (img->colorpalette[5] >> 8) & 0xFF, img->colorpalette[5] & 0xFF);
+		printf("6 r : %d, g : %d, b : %d\n", img->colorpalette[6] >> 16, (img->colorpalette[6] >> 8) & 0xFF, img->colorpalette[6] & 0xFF);
+		printf("7 r : %d, g : %d, b : %d\n", img->colorpalette[7] >> 16, (img->colorpalette[7] >> 8) & 0xFF, img->colorpalette[7] & 0xFF);
+		printf("8 r : %d, g : %d, b : %d\n", img->colorpalette[8] >> 16, (img->colorpalette[8] >> 8) & 0xFF, img->colorpalette[8] & 0xFF);
+		printf("9 r : %d, g : %d, b : %d\n", img->colorpalette[9] >> 16, (img->colorpalette[9] >> 8) & 0xFF, img->colorpalette[9] & 0xFF);
+		printf("\n");
 	}
 	if (keycode == 65307)
 		freeall(img);
